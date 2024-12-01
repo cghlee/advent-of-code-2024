@@ -9,42 +9,64 @@ internal class Program
         string equallySpacedData = rawData.Replace("   ", " ");
         string[] splitData = equallySpacedData.Split(' ');
 
-        List<int> listOne = new List<int>();
-        List<int> listTwo = new List<int>();
-
-        for (int i = 0; i < splitData.Length; i++)
-        {
-            int parsedInt = int.Parse(splitData[i]);
-
-            switch (i % 2 == 0)
-            {
-                case true:
-                    listOne.Add(parsedInt);
-                    break;
-                case false:
-                    listTwo.Add(parsedInt);
-                    break;
-            }
-        }
-
-        listOne.Sort();
-        listTwo.Sort();
+        (List<int> orderedListOne, List<int> orderedListTwo) = GetOrderedLists(splitData);
 
         // Solution for Part One
-        //int sumDiff = 0;
-        //for (int i = 0; i < listOne.Count; i++)
-        //{
-        //    sumDiff += Math.Abs(listOne[i] - listTwo[i]);
-        //}
+        int sumDiff = GetSumOfDiffs(orderedListOne, orderedListTwo);
 
         // Solution for Part Two
-        int sumSimilarity = 0;
-        foreach (int listOneNumber in listOne)
+        int sumSimilarity = GetSumOfSimilarities(orderedListOne, orderedListTwo);
+
+        Console.WriteLine("Answer for Part One: " + sumDiff);
+        Console.WriteLine("Answer for Part Two: " + sumSimilarity);
+
+
+        // HELPER METHODS
+        (List<int>, List<int>) GetOrderedLists(string[] splitValues)
         {
-            int listTwoHits = listTwo.Count(i => i == listOneNumber);
-            sumSimilarity += (listOneNumber * listTwoHits);
+            List<int> listOne = new List<int>();
+            List<int> listTwo = new List<int>();
+
+            for (int i = 0; i < splitValues.Length; i++)
+            {
+                int parsedInt = int.Parse(splitValues[i]);
+
+                switch (i % 2 == 0)
+                {
+                    case true:
+                        listOne.Add(parsedInt);
+                        break;
+                    case false:
+                        listTwo.Add(parsedInt);
+                        break;
+                }
+            }
+
+            listOne.Sort();
+            listTwo.Sort();
+
+            return (listOne, listTwo);
         }
 
-        Console.WriteLine(sumSimilarity);
+        int GetSumOfDiffs(List<int> listOne, List<int> listTwo)
+        {
+            int sumDiff = 0;
+            for (int i = 0; i < listOne.Count; i++)
+            {
+                sumDiff += Math.Abs(listOne[i] - listTwo[i]);
+            }
+            return sumDiff;
+        }
+
+        int GetSumOfSimilarities(List<int> listOne, List<int> listTwo)
+        {
+            int sumSimilarity = 0;
+            foreach (int listOneNumber in orderedListOne)
+            {
+                int listTwoHits = orderedListTwo.Count(i => i == listOneNumber);
+                sumSimilarity += (listOneNumber * listTwoHits);
+            }
+            return sumSimilarity;
+        }
     }
 }
