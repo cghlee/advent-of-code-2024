@@ -26,31 +26,27 @@ internal class Program
                                         .Select(s => int.Parse(s))
                                         .ToArray();
 
-            int[] intRowAscending = splitIntRow.Order()
-                                               .ToArray();
-            int[] intRowDescending = splitIntRow.OrderDescending()
-                                                .ToArray();
+            List<List<int>> allPossibleReports = new List<List<int>>();
 
-            bool isRowAscOrDesc = splitIntRow.SequenceEqual(intRowAscending)
-                                  || splitIntRow.SequenceEqual(intRowDescending);
+            bool isSafeReport = ReportHelper.SafeReportChecker(splitIntRow);
 
-
-            if (!isRowAscOrDesc)
-                continue;
-
-            bool isGradualDiff = true;
-            for (int i = 1; i < splitIntRow.Length; i++)
+            if (!isSafeReport)
             {
-                int levelDiff = Math.Abs(splitIntRow[i] - splitIntRow[i - 1]);
+                List<List<int>> altReports = ReportHelper.GetAltReports(splitIntRow);
 
-                if (levelDiff is >3 or 0)
+                foreach (List<int> report in altReports)
                 {
-                    isGradualDiff = false;
-                    break;
-                } 
+                    isSafeReport = ReportHelper.SafeReportChecker(report.ToArray());
+
+                    if (isSafeReport)
+                    {
+                        isSafeReport = true;
+                        break;
+                    }
+                }
             }
 
-            if (isGradualDiff)
+            if (isSafeReport)
             {
                 safeReportCount++;
             }
