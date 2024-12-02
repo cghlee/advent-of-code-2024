@@ -1,26 +1,29 @@
 ﻿namespace DayTwo;
 
-public static class ReportHelper
+internal static class ReportHelper
 {
-    public static List<List<int>> GetAltReports(int[] report)
+    internal static List<List<int>> GetAltReports(int[] report)
     {
         List<List<int>> allAltReports = new List<List<int>>();
 
         for (int i = 0; i < report.Length; i++)
         {
-            List<int> possibleReport = report.ToList();
-            possibleReport.RemoveAt(i);
+            List<int> altReport = report.ToList();
+            altReport.RemoveAt(i);
 
-            bool isReportOrdered = AscDescChecker(possibleReport.ToArray());
-
-            if (isReportOrdered)
-                allAltReports.Add(possibleReport);
+            allAltReports.Add(altReport);
         }
 
         return allAltReports;
     }
 
-    public static bool AscDescChecker(int[] report)
+    internal static bool SafeReportChecker(int[] report)
+    {
+        return AscDescChecker(report)
+               && GradualDiffChecker(report);
+    }
+
+    private static bool AscDescChecker(int[] report)
     {
         int[] reportAsc = GetAscendingReport(report);
         int[] reportDesc = GetDescendingReport(report);
@@ -34,7 +37,7 @@ public static class ReportHelper
         return true;
     }
 
-    public static bool GradualDiffChecker(int[] report)
+    private static bool GradualDiffChecker(int[] report)
     {
         bool isGradualDiff = true;
         for (int i = 1; i < report.Length; i++)
@@ -52,12 +55,6 @@ public static class ReportHelper
             return false;
 
         return true;
-    }
-
-    public static bool SafeReportChecker(int[] report)
-    {
-        return AscDescChecker(report)
-               && GradualDiffChecker(report);
     }
 
     private static int[] GetAscendingReport(int[] report)
