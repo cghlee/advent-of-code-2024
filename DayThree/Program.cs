@@ -9,7 +9,24 @@ internal class Program
     {
         string rawData = FileUtilities.GetRawData("input.txt");
 
-        var trimmedMatches = Regex.Matches(rawData, @"mul\(\d+,\d+\)")
+
+        /* Below code not needed for Part 1 solution */
+        string[] stringSplitOnDo = rawData.Split("do()");
+
+        List<string> viableSegments = new();
+        foreach (string splitString in stringSplitOnDo)
+        {
+            if (splitString.Contains("don't()"))
+                viableSegments.Add(splitString.Split("don't()")[0]);
+            else
+                viableSegments.Add(splitString);
+        }
+
+        string filteredString = String.Join("", viableSegments);
+        /* Above code not needed for Part 1 solution */
+
+
+        var trimmedMatches = Regex.Matches(filteredString, @"mul\(\d+,\d+\)")
                                   .Select(m => m.ToString()[4..^1]);
 
         var totalSum = 0;
