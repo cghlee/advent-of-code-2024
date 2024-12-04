@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using Utilities.IO;
 
 namespace DayFour;
@@ -9,7 +10,7 @@ internal class Program
     {
         string rawData = FileUtilities.GetRawData("input.txt");
 
-
+        /*  PART ONE SOLUTION
         int lineLength = rawData.Split()[0].Length;
         string linePadding = new String('O', lineLength) + "\n";
 
@@ -36,6 +37,38 @@ internal class Program
         }
 
         Console.WriteLine(xmasCountSum);
+            PART ONE SOLUTION */
+
+        string[] splitData = rawData.Split().ToArray();
+
+        int xmasMatch = 0;
+        for (int i = 0; i < splitData.Length - 2; i++)
+        {
+            for (int j = 0; j < splitData[0].Length - 2; j++)
+            {
+                string[] threeByThree =
+                    [
+                        splitData[i][j .. (j + 3)],
+                        splitData[i + 1][j .. (j + 3)],
+                        splitData[i + 2][j .. (j + 3)],
+                    ];
+
+                string flattened = String.Join("", threeByThree);
+
+                string msPattern = @"M.S.A.M.S";
+                string smPattern = @"S.M.A.S.M";
+                string mmPattern = @"M.M.A.S.S";
+                string ssPattern = @"S.S.A.M.M";
+
+                if (Regex.Match(flattened, msPattern).Success || Regex.Match(flattened, smPattern).Success
+                    || Regex.Match(flattened, mmPattern).Success || Regex.Match(flattened, ssPattern).Success)
+                {
+                    xmasMatch++;
+                }
+            }
+        }
+
+        Console.WriteLine(xmasMatch);
     }
 
     static int GetXmasMatches(string[] fullSegment)
