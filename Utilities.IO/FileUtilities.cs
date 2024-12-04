@@ -11,7 +11,7 @@ public static class FileUtilities
         using (FileStream fileStream = new(inputFilePath, FileMode.Open, FileAccess.Read))
         {
             StreamReader sr = new StreamReader(fileStream);
-            data = sr.ReadToEnd();
+            data = sr.ReadToEnd().Trim();
         }
 
         return data;
