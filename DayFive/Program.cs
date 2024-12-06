@@ -11,32 +11,35 @@ internal class Program
         string[] separatedData = rawData.Split("\n\n");
 
         string[] orderingRules = separatedData[0].Split("\n");
-        string[] allUpdatesRows = separatedData[1].Split("\n");
+        string[][] splitRules = orderingRules.Select(r => r.Split('|')).ToArray();
 
-        List<string[]> correctRows = new();
-        List<string[]> incorrectRows = new();
+        string[] allUpdates = separatedData[1].Split("\n");
 
-        for (int i = 0; i < allUpdatesRows.Length; i++)
+        List<string[]> orderedRows = new();
+        List<string[]> nonOrderedRows = new();
+
+        for (int i = 0; i < allUpdates.Length; i++)
         {
-            string[] currentRow = allUpdatesRows[i].Split(',');
+            string[] currentRow = allUpdates[i].Split(',');
 
             bool isCorrectRow = true;
             for (int j = 0; j < currentRow.Length; j++)
             {
-                string[] rowSegment = currentRow[..(j + 1)];
+                string[] precedingRowSegment = currentRow[..(j + 1)];
 
-                foreach (string rule in orderingRules)
+                foreach (string[] rule in splitRules)
                 {
-                    string[] splitRule = rule.Split('|');
-                    string ruleValue = splitRule[0];
-                    string valueToBeAfter = splitRule[1];
+                    string ruleValue = rule[0];
+                    string valueToBeAfter = rule[1];
 
-                    if (rowSegment[j] == ruleValue)
-                        if (rowSegment.Contains(valueToBeAfter))
+                    if (precedingRowSegment[j] == ruleValue)
+                    {
+                        if (precedingRowSegment.Contains(valueToBeAfter))
                         {
                             isCorrectRow = false;
                             break;
                         }
+                    }
                 }
 
                 if (!isCorrectRow)
@@ -44,80 +47,68 @@ internal class Program
             }
 
             if (isCorrectRow)
-                correctRows.Add(currentRow);
+                orderedRows.Add(currentRow);
             else
-                incorrectRows.Add(currentRow);
+                nonOrderedRows.Add(currentRow);
         }
 
-        /*  SUM FOR PART 1
-        int sumMiddle = 0;
-        foreach (string[] row in correctRows)
+        int partOneSumMiddle = SumMiddleNumbers(orderedRows);
+        Console.WriteLine("Part 1 answer: " + partOneSumMiddle);
+
+
+        List<string[]> partTwoCorrectedRows = new();
+
+        for (int i = 0; i < nonOrderedRows.Count; i++)
         {
-            int middleIndex = (row.Length - 1) / 2;
-
-            sumMiddle += int.Parse(row[middleIndex]);
-        }
-
-        Console.WriteLine(sumMiddle);
-            SUM FOR PART 1 */
-
-        List<string[]> correctedRows = new();
-
-        for (int i = 0; i < incorrectRows.Count; i++)
-        {
-            string[] currentRow = incorrectRows[i];
-            List<string> currentRowList = currentRow.ToList();
+            List<string> currentRow = nonOrderedRows[i].ToList();
 
             while (true)
             {
-                bool isOrdered = true;
+                bool isFullyOrdered = true;
 
-                for (int j = 0; j < currentRowList.Count; j++)
+                for (int j = 0; j < currentRow.Count; j++)
                 {
-                    List<string> rowSegmentList = currentRowList[..(j + 1)];
+                    List<string> precedingRowSegment = currentRow[..(j + 1)];
 
-                    foreach (string rule in orderingRules)
+                    foreach (string[] rule in splitRules)
                     {
-                        string[] splitRule = rule.Split('|');
-                        string ruleValue = splitRule[0];
-                        string valueToBeAfter = splitRule[1];
+                        string ruleValue = rule[0];
+                        string valueToBeAfter = rule[1];
 
-                        if (rowSegmentList[j] == ruleValue)
+                        if (precedingRowSegment[j] == ruleValue)
                         {
-                            if (rowSegmentList.Contains(valueToBeAfter))
+                            if (precedingRowSegment.Contains(valueToBeAfter))
                             {
-                                int wrongElementIndex = currentRowList.IndexOf(valueToBeAfter);
-                                currentRowList.RemoveAt(wrongElementIndex);
-                                currentRowList.Add(valueToBeAfter);
+                                int wrongElementIndex = currentRow.IndexOf(valueToBeAfter);
+                                currentRow.RemoveAt(wrongElementIndex);
+                                currentRow.Add(valueToBeAfter);
 
-                                isOrdered = false;
-                                break;
+                                isFullyOrdered = false;
                             }
                         }
                     }
-
-                    if (!isOrdered)
-                        break;
                 }
 
-                if (isOrdered)
+                if (isFullyOrdered)
                 {
-                    correctedRows.Add(currentRowList.ToArray());
+                    partTwoCorrectedRows.Add(currentRow.ToArray());
                     break;
                 }
             }
         }
 
-        Console.WriteLine(correctedRows.Count);
+        int partTwoSumMiddle = SumMiddleNumbers(partTwoCorrectedRows);
+        Console.WriteLine("Part 2 answer: " + partTwoSumMiddle);
+    }
 
-        int sumMiddle = 0;
-        foreach (string[] row in correctedRows)
+    static int SumMiddleNumbers(List<string[]> orderedRows)
+    {
+        int totalSum = 0;
+        foreach (string[] row in orderedRows)
         {
             int middleIndex = (row.Length - 1) / 2;
-
-            sumMiddle += int.Parse(row[middleIndex]);
+            totalSum += int.Parse(row[middleIndex]);
         }
-
-        Console.WriteLine(sumMiddle);
+        return totalSum;
     }
 }
