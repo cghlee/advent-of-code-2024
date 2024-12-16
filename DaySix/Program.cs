@@ -1,11 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Utilities.IO;
+﻿using Utilities.IO;
 
 namespace DaySix;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
         string rawData = FileUtilities.GetRawData("input.txt");
 
@@ -130,7 +129,9 @@ internal class Program
         Console.WriteLine(pathCoords.Count);
 
 
-        // PART 2 ANSWER INCORRECT
+
+        /* PART 2 SOLUTION BELOW */
+
         int infiniteLoopCounter = 0;
         var lockObject = new object();
 
