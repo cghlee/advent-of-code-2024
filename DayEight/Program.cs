@@ -50,19 +50,23 @@ internal class Program
                     int antiNodeOneX = x2 + xDiff;
                     int antiNodeOneY = y2 + yDiff;
 
-                    if (antiNodeOneX >= 0 && antiNodeOneX < height
-                        && antiNodeOneY >= 0 && antiNodeOneY < width)
+                    while (antiNodeOneX >= 0 && antiNodeOneX < height
+                           && antiNodeOneY >= 0 && antiNodeOneY < width)
                     {
                         splitRows[antiNodeOneX][antiNodeOneY] = 'X';
+                        antiNodeOneX += xDiff;
+                        antiNodeOneY += yDiff;
                     }
 
                     int antiNodeTwoX = x1 - xDiff;
                     int antiNodeTwoY = y1 - yDiff;
 
-                    if (antiNodeTwoX >= 0 && antiNodeTwoX < height
-                        && antiNodeTwoY >= 0 && antiNodeTwoY < width)
+                    while (antiNodeTwoX >= 0 && antiNodeTwoX < height
+                           && antiNodeTwoY >= 0 && antiNodeTwoY < width)
                     {
                         splitRows[antiNodeTwoX][antiNodeTwoY] = 'X';
+                        antiNodeTwoX -= xDiff;
+                        antiNodeTwoY -= yDiff;
                     }
                 }
             }
@@ -71,7 +75,7 @@ internal class Program
         int antiNodeCount = 0;
         foreach (char[] row in splitRows)
             foreach (char c in row)
-                if (c == 'X')
+                if (c != '.')
                     antiNodeCount++;
 
         Console.WriteLine(antiNodeCount);
