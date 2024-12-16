@@ -40,9 +40,9 @@ internal class Program
         long nextNumber = numbers[currentIndex + 1];
         long concatSum = long.Parse($"{rollingSum}{nextNumber}");
 
-        return CalculateTotal(testValue, numbers, currentIndex + 1, rollingSum + nextNumber) ||
-               CalculateTotal(testValue, numbers, currentIndex + 1, rollingSum * nextNumber) ||
+        return CalculateTotal(testValue, numbers, currentIndex + 1, rollingSum + nextNumber)
+               || CalculateTotal(testValue, numbers, currentIndex + 1, rollingSum * nextNumber)
                // Comment out below line for Part 1 solution
-               CalculateTotal(testValue, numbers, currentIndex + 1, concatSum);
+               || CalculateTotal(testValue, numbers, currentIndex + 1, concatSum);
     }
 }
